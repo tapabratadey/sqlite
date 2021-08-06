@@ -14,7 +14,7 @@ Create a `class` called `MySqliteRequest` in `my_sqlite_request.rb.` It will hav
 
 All methods, except run, will `return an instance of my_sqlite_request`. You will build the request by progressive call and `execute the request` by `calling run`.
 
-`Each row must have an ID`.
+`Each row must have an ID`
 
 We will do only 1 join and 1 where per request.
 
