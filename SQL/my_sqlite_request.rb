@@ -4,6 +4,7 @@
 # 4. order_type = asc (default) OR DESC => "selects"    => ORDER
 # 5. where col = WHERE filter query                     => WHERE
 # 6. where val = WHERE filter query value               => WHERE
+require 'csv'    
 class MySqliteRequest
     def initialize
         @type_of_query = :none
@@ -16,7 +17,6 @@ class MySqliteRequest
         @insert_vals = {}
         @update_vals = {}
     end
-    
     def from(table_name)
         @table_name = table_name
     end
@@ -61,31 +61,96 @@ class MySqliteRequest
         @table_name = table_name
     end
 
-    def set(data)
+    def set(data) 
         if (@type_of_query == :update)
             @update_vals = data
-            puts @update_vals
         else
             raise "SET must correspond with UPDATE Query"
         end
     end
 
-    # def join(column_on_db_a, filename_db_b, column_on_db_b)
-    # end
+    def join(column_on_db_a, filename_db_b, column_on_db_b)
+        @column_join_db_a = column_on_db_a
+        @second_db = filename_db_b
+        @column_join_db_b = column_on_db_b
+    end
 
-    # def delete
-        # @type_of_query = :delete
+    def delete
+        @type_of_query = :delete
+        # delete all matching row
+    end
+
+    def _print_select
+        puts "SELECT #{@columns} "
+        puts "FROM #{@table_name} "
+        if (@where_col)
+            puts "WHERE #{@where_col} = #{@where_col_val}"
+        end
+    end
+    
+    def _print_insert
+        puts "INSERT INTO #{@table_name} "
+        puts "VALUES #{@insert_vals} "
+        if (@where_col)
+            puts "WHERE #{@where_col} = #{@where_col_val}"
+        end
+    end
+    
+    def _print_update
+        puts "UPDATE #{@table_name} "
+        puts "SET #{@update_vals} "
+        if (@where_col)
+            puts "WHERE #{@where_col} = #{@where_col_val}"
+        end
+    end
+
+    def _parser #select, update, delete, insert
+        if (@type_of_query == :select)
+            _print_select
+            _exec_select            
+        elsif(@type_of_query == :insert)
+            _print_insert
+            _exec_insert  
+        elsif(@type_of_query == :update)
+            _print_update
+            _exec_update
+        end
+    
+    end
+    
+    def _exec_select
+        result = []
+        csv = CSV.parse(File.read(@table_name), headers: true)
+        csv.each do |row|
+            if row[@where_col] == @where_col_val
+                result << row.to_hash.slice(*@columns)
+            end
+        end
+        result
+    end
+
+    def _exec_insert
+        File.open(@table_name, 'a') do |file|
+            file.puts @insert_vals.values.join(',')
+        end
+    end
+    
+    # def _exec_update
+    #     result = []
+    #     csv = CSV.parse(File.read("test.csv"), headers: true)
+    #     csv.each do |row|
+    #         if row[@where_col] == @where_col_val
+    #             result << row.to_hash.slice(*@columns)
+    #         end
+    #     end
+    #     result
     # end
     
-    # def run
-    #     # SELECT name FROM nba_player_data.csv WHERE birth_state = Indiana
-    #     # @type_of_query @columns @table_name ...
-        
-    #     1. first we grab the table data (file) => loop through it
-    #     2. find a match with all our queries 
-	# end
-end
 
+    def run
+        _parser
+	end
+end
 
 # @return {array of hash} [{ }]
 
@@ -93,27 +158,36 @@ def main()
     request = MySqliteRequest.new #creating an instance
     
     #PARSING
-    # request.from('nba_player_data.csv')
+
+    # SELECT 
+
     # request.select('name')
-    # request.select(['name', 'test'])
-    # request.where('birth_state', 'Indiana')
-    # request.order('name', 'desc')
+    # request.from('nba_player_data.csv')
+    # request.where('birth_date', "June 24, 1968")
     
     # INSERT / VALUES
 
-    # request.insert('nba_player_data.csv')
-    # vals = {"name" => "Alaa Abdelnaby", "year_start" => "1991" ,"year_end" => "1995", "position" => "F-C","height" => "6-10" ,"weight" => "240","birth_date" => "June 24, 1968","college" => "Duke University"}
-    # request.values(vals)
+    request.insert('test.csv')
+    vals = {"name" => "Alaa Abdelnaby", "year_start" => "1991" ,"year_end" => "1995", "position" => "F-C","height" => "6-10" ,"weight" => "240","birth_date" => "June 24, 1968","college" => "Duke University"}
+    request.values(vals)
+    # request.where('birth_state', 'Indiana') # ===> OPTIONAL
     
     # UPDATE / SET
     
-    request.update('nba_player_data.csv')
-    data = {"name" => "tapa"}
-    request.set(data)
-    
+    # request.update('nba_player_data.csv')
+    # data = {"name" => "tapa"}
+    # request.set(data)
+    # request.where('birth_state', 'Indiana') # ===> OPTIONAL
     
     #EXECUTE
-    # request.run
+    request.run
+
+    # ORDER / SELECT (ARRAY) =====> EXTRAS
+
+    # request.order('name', 'desc')
+    # request.select(['name', 'test'])
+
 end
 
 main()
+
