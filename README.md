@@ -83,9 +83,10 @@ ALGO (AUG 7th, 2021)
 -   def exec_select ✅
 -   fix path in File.read() ✅
 -   def exec_insert ✅
--   def exec_update
+-   def exec_update ✅
 -   def exec_delete
--   add order / join feature in SELECT
+-   def join
+-   def order
 -   PART II
 -   try to split the class into files by query type
 

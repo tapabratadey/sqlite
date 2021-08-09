@@ -135,21 +135,35 @@ class MySqliteRequest
         end
     end
     
-    # def _exec_update
-    #     result = []
-    #     csv = CSV.parse(File.read("test.csv"), headers: true)
-    #     csv.each do |row|
-    #         if row[@where_col] == @where_col_val
-    #             result << row.to_hash.slice(*@columns)
-    #         end
-    #     end
-    #     result
-    # end
-    
+    def _updating_file(csv)
+        File.open(@table_name, 'w+') do |file|
+            idx = 0
+            csv.each do |row|
+                if idx == 0
+                    file << csv.headers.join(',') + "\n"
+                end
+                file << row
+                idx += 1
+            end
+        end
+    end
 
+    def _exec_update
+        csv = CSV.read(@table_name, headers:true)
+        csv.each do |row|
+            if @where_col and @where_col_val and (row[@where_col] == @where_col_val)
+                row[@where_col] = @update_vals[@where_col]
+            elsif !@where_col or !@where_col_val
+                row[@update_vals.keys.join] = @update_vals.values.join
+            end
+        end
+        _updating_file(csv)
+    end
+    
     def run
         _parser
-	end
+    end
+    
 end
 
 # @return {array of hash} [{ }]
@@ -163,21 +177,21 @@ def main()
 
     # request.select('name')
     # request.from('nba_player_data.csv')
-    # request.where('birth_date', "June 24, 1968")
+    # request.where('birth_date', "June 24, 1968") # ===> OPTIONAL
     
     # INSERT / VALUES
 
-    request.insert('test.csv')
-    vals = {"name" => "Alaa Abdelnaby", "year_start" => "1991" ,"year_end" => "1995", "position" => "F-C","height" => "6-10" ,"weight" => "240","birth_date" => "June 24, 1968","college" => "Duke University"}
-    request.values(vals)
-    # request.where('birth_state', 'Indiana') # ===> OPTIONAL
+    # request.insert('test.csv')
+    # vals = {"name" => "Alaa Abdelnaby", "year_start" => "1991" ,"year_end" => "1995", "position" => "F-C","height" => "6-10" ,"weight" => "240","birth_date" => "'June 24, 1968'","college" => "Duke University"}
+    # request.values(vals)
+    # request.where('birth_state', 'Indiana')
     
     # UPDATE / SET
     
-    # request.update('nba_player_data.csv')
-    # data = {"name" => "tapa"}
-    # request.set(data)
-    # request.where('birth_state', 'Indiana') # ===> OPTIONAL
+    request.update('test.csv')
+    data = {"name" => "thays"}
+    request.set(data)
+    request.where('name', 'test') # ===> OPTIONAL
     
     #EXECUTE
     request.run
