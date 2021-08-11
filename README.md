@@ -84,10 +84,10 @@ ALGO (AUG 7th, 2021)
 -   fix path in File.read() ✅
 -   def exec_insert ✅
 -   def exec_update ✅
--   def exec_delete
--   def join
+-   def exec_delete ✅
+-   def join w/ where and w/o where ✅
 -   def order
--   PART II
 -   try to split the class into files by query type
-
-ALGO (AUG 8th, 2021)
+-   refactor
+-   PART II
+-   error validation

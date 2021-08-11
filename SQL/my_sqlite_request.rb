@@ -4,6 +4,7 @@
 # 4. order_type = asc (default) OR DESC => "selects"    => ORDER
 # 5. where col = WHERE filter query                     => WHERE
 # 6. where val = WHERE filter query value               => WHERE
+
 require 'csv'    
 class MySqliteRequest
     def initialize
@@ -16,11 +17,15 @@ class MySqliteRequest
         @order_col = nil
         @insert_vals = {}
         @update_vals = {}
+        @column_join_db_a = nil
+        @second_db = nil
+        @column_join_db_b = nil
+        @join_flag = 0
     end
     def from(table_name)
         @table_name = table_name
     end
-    
+
     def select(query_col)
         @type_of_query = :select
         if (query_col.kind_of?(Array))
@@ -35,7 +40,7 @@ class MySqliteRequest
         @where_col = column_name
         @where_col_val = criteria
     end
-    
+
     def order(order, column_name)
         @order = order
         @order_col = column_name
@@ -69,13 +74,14 @@ class MySqliteRequest
         end
     end
 
-    def join(column_on_db_a, filename_db_b, column_on_db_b)
-        @column_join_db_a = column_on_db_a
-        @second_db = filename_db_b
-        @column_join_db_b = column_on_db_b
+    def join(col_on_db_a, file_db_b, col_on_db_b)
+        @join_flag = 1
+        @column_join_db_a = col_on_db_a
+        @second_db = file_db_b
+        @column_join_db_b = col_on_db_b
     end
 
-    def delete
+    def delete 
         @type_of_query = :delete
         # delete all matching row
     end
@@ -86,7 +92,24 @@ class MySqliteRequest
         if (@where_col)
             puts "WHERE #{@where_col} = #{@where_col_val}"
         end
+
+        # @table_name.@column_join_db_a = @file_db_b.@column_join_db_b
+        if (@column_join_db_a and @column_join_db_b and @second_db)
+            puts "JOIN #{@second_db} ON #{@table_name}.#{@column_join_db_a}=#{@second_db}.#{@column_join_db_b}"
+        end
     end
+    # CUSTOMERS
+    # CustomerID  CustomerName    ContactName Country
+
+    # # ORDERS
+    # OrderID     CustomerID      OrderDate
+
+    # SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+    # FROM Orders
+    # INNER JOIN Customers
+    # ON Orders.CustomerID=Customers.CustomerID
+    
+    # OrderID     CustomerName    OrderDate
     
     def _print_insert
         puts "INSERT INTO #{@table_name} "
@@ -104,6 +127,13 @@ class MySqliteRequest
         end
     end
 
+    def _print_delete
+        puts "DELETE FROM #{@table_name}"
+        if (@where_col)
+            puts "WHERE #{@where_col} = #{@where_col_val}"
+        end
+    end
+
     def _parser #select, update, delete, insert
         if (@type_of_query == :select)
             _print_select
@@ -114,6 +144,9 @@ class MySqliteRequest
         elsif(@type_of_query == :update)
             _print_update
             _exec_update
+        elsif(@type_of_query == :delete)
+            _print_delete
+            _exec_delete
         end
     
     end
@@ -121,13 +154,37 @@ class MySqliteRequest
     def _exec_select
         result = []
         csv = CSV.parse(File.read(@table_name), headers: true)
-        csv.each do |row|
-            if row[@where_col] == @where_col_val
-                result << row.to_hash.slice(*@columns)
+        csv_b = CSV.parse(File.read(@second_db), headers: true)
+        if @join_flag != 1
+            csv.each do |row|
+                if row[@where_col] == @where_col_val and @where_col and @where_col_val
+                    result << row.to_hash.slice(*@columns)
+                else
+                    result << row.to_hash.slice(*@columns)
+                end
+            end
+        else
+            csv.each do |row|
+                csv_b.each do |row_b|
+                    if !row[@column_join_db_a] or 
+                        !row_b[@column_join_db_b] or 
+                        !row.has_key?(@columns[0]) or 
+                        !row_b.has_key?(@columns[1]) or
+                        !row.has_key?(@where_col)
+                        throw "Column doesn't exist in the database"
+                    end
+                    if (row[@column_join_db_a] == row_b[@column_join_db_b]) and (row[@where_col] == @where_col_val)
+                        result << {@columns[0] => row[@columns[0]], @columns[1] => row_b[@columns[1]]}
+                    elsif (!@where_col or !@where_col_val) and (row[@column_join_db_a] == row_b[@column_join_db_b])
+                        result << {@columns[0] => row[@columns[0]], @columns[1] => row_b[@columns[1]]}
+                    end
+                end
             end
         end
         result
     end
+
+
 
     def _exec_insert
         File.open(@table_name, 'a') do |file|
@@ -159,11 +216,22 @@ class MySqliteRequest
         end
         _updating_file(csv)
     end
+
+    def _exec_delete
+        csv = CSV.read(@table_name, headers:true)
+        csv.delete_if do |row|
+            !@where_col and !@where_col_val
+        end
+        csv.delete_if do |row|
+            @where_col and @where_col_val and (row[@where_col] == @where_col_val)
+        end
+        _updating_file(csv)
+    end
     
     def run
         _parser
     end
-    
+
 end
 
 # @return {array of hash} [{ }]
@@ -172,7 +240,6 @@ def main()
     request = MySqliteRequest.new #creating an instance
     
     #PARSING
-
     # SELECT 
 
     # request.select('name')
@@ -188,13 +255,30 @@ def main()
     
     # UPDATE / SET
     
-    request.update('test.csv')
-    data = {"name" => "thays"}
-    request.set(data)
-    request.where('name', 'test') # ===> OPTIONAL
+    # request.update('test.csv')
+    # data = {"name" => "thays"}
+    # request.set(data)
+    # request.where('name', 'test') # ===> OPTIONAL
+
+    # DELETE 
+    # request.delete # delete the whole table
+    # request.from('test.csv')
+    # request.where('name', 'test') # ===> OPTIONAL
+
+    # JOIN
+    # request.select(['id', 'name']) # [col from 1st, col from 2nd]
+    # request.from('orders.csv') # col 1st
+    # # request.where('college', "Indiana University") # ===> OPTIONAL
+    # request.join('cus_id', 'customers.csv', "cus_id") #Orders.CustomerID = Customers.CustomerID
+
+    request.select(['birth_city', 'college']) # [col from 1st, col from 2nd]
+    request.from('nba_players.csv') # col 1st
+    request.where('college', "Indiana University") # ===> OPTIONAL
+    request.join('Player', 'test.csv', "name") #Orders.CustomerID = Customers.CustomerID
     
+
     #EXECUTE
-    request.run
+    p request.run
 
     # ORDER / SELECT (ARRAY) =====> EXTRAS
 
