@@ -86,8 +86,7 @@ ALGO (AUG 7th, 2021)
 -   def exec_update ✅
 -   def exec_delete ✅
 -   def join w/ where and w/o where ✅
+-   split the class into files by query type and refactor code
 -   def order
--   try to split the class into files by query type
--   refactor
 -   PART II
 -   error validation
