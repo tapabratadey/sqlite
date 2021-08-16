@@ -1,5 +1,4 @@
 # my-sqlite
-
 updating
 
 ## Description
@@ -62,31 +61,34 @@ def from(table_name)
 
 TODO </br>
 
-##
+## 
+PARSING (AUG 6th, 2021) 
+- def initialize ✅
+- def from(table_name)✅
+- def select(column_name) OR def select([column_name_a, column_name_b]) ✅
+- def where(column_name, criteria) ✅
+- def order(order, column_name) ✅
+- def insert(table_name) ✅
+- def values(data)✅
+- def update (table_name)✅
+- def set(data)✅
 
-PARSING (AUG 6th, 2021)
+ALGO (AUG 7th, 2021) 
+- def delete ✅ 
+- def join(column_on_db_a, filename_db_b, column_on_db_b) ✅
+- def exec_select ✅
+- fix path in File.read() ✅
+- def exec_insert ✅
+- def exec_update ✅
+- def exec_delete ✅ 
+- def join w/ where and w/o where ✅ 
+- split the class into files by query type and refactor code ✅ 
+- def order ✅ 
+- PART II
+- error validation
 
--   def initialize ✅
--   def from(table_name)✅
--   def select(column_name) OR def select([column_name_a, column_name_b]) ✅
--   def where(column_name, criteria) ✅
--   def order(order, column_name) ✅
--   def insert(table_name) ✅
--   def values(data)✅
--   def update (table_name)✅
--   def set(data)✅
-
-ALGO (AUG 7th, 2021)
-
--   def delete ✅
--   def join(column_on_db_a, filename_db_b, column_on_db_b) ✅
--   def exec_select ✅
--   fix path in File.read() ✅
--   def exec_insert ✅
--   def exec_update ✅
--   def exec_delete ✅
--   def join w/ where and w/o where ✅
--   split the class into files by query type and refactor code
--   def order
--   PART II
--   error validation
+PART II
+  - Read from stdin
+  - Parse => Store in objects
+  - Execute with MySQliteRequest objects
+  - Implement Quit method to exit out  

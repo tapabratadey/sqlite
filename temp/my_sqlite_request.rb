@@ -11,6 +11,89 @@
 #     end
 # end
 
+
+1. select✅
+2. update✅ 
+3. insert✅
+4. delete ✅
+
+5. from ✅
+6. where ✅
+7. set ✅
+8. values ✅
+9. join ✅
+10. order ✅
+
+11. _print_select✅
+12. _print_update✅
+13. _print_insert✅
+14. _print_delete✅
+
+15. _parser ✅
+16. run          ✅ 
+17. _exec_select ✅
+18. _exec_update ✅
+19. _exec_insert ✅
+20. _exec_delete ✅
+
+21. _updating_file ✅
+22. initialize ✅
+
+=begin
+=> csv_files
+=> my_sqlite/
+    => my_sqlite_request.rb
+    => select.rb
+    => update.rb
+    => insert.rb
+    => delete.rb
+=> main.rb
+=end
+
+#=========================
+#   my_sqlite_request.rb
+#=========================
+initialize method
+run method
+where method
+parser method
+from method
+
+#=========================
+#       select.rb
+#=========================
+select method
+join method
+order method
+_print_select
+_exec_select
+
+#=========================
+#       update.rb
+#=========================
+update method
+set method
+_updating_file
+_print_update
+_exec_update
+
+#=========================
+#       insert.rb
+#=========================
+insert method
+values method
+_print_insert
+_exec_insert
+
+#=========================
+#       delete.rb
+#=========================
+delete method
+_print_delete
+_exec_delete
+
+
+
 require 'csv'
 
 class MySqliteRequest
@@ -232,9 +315,7 @@ class MySqliteRequest
             @where_col and @where_col_val and (row[@where_col] == @where_col_val)
         end
         _updating_file(csv)
-    end
-    
-    
+    end 
 
     def run
         _parser
