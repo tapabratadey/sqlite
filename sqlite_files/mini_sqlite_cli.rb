@@ -40,28 +40,7 @@ class SqliteCli
     def read_cli (request)
         _print_time
         while buf = Readline.readline("> ", true)
-            arr = buf.split
-            arr.each_with_index do |item, index|
-                if index == 0 and @query_array.include?(item.upcase)
-                    
-                    query_col = arr[index + 1]
-                    if query_col and !@command_array.include?(query_col.upcase)
-                        request.send(item, query_col) 
-                        request.run
-                    end
-                end
-                if index == 0 and item.upcase == "SELECT"
-                    select_flag = 1
-                    query_col = arr[index + 1]
-                    if query_col and !@command_array.include?(query_col.upcase)
-                        request.select(query_col)
-                    else
-                        puts "Invalid Request"
-                    end
-                else
-                    puts "Invalid Request"
-                end    
-
+            
 
             end
         end 

@@ -1,6 +1,5 @@
 require 'csv'
 require 'readline'
-require 'optparse'
 Dir["./sqlite_files/*.rb"].each {|sqlite_file| require sqlite_file }
 
 $test_table = './csv_files/test.csv'
@@ -16,12 +15,12 @@ def select_query(request) # with order
     request.where('birth_date', "June 24, 1968")    # ===> OPTIONAL
     request.order('desc', 'name')
 end
-SELECT birth_city, college from nba_players
+
 def select_join_query(request) # join
     request.select(['birth_city', 'college'])
     request.from($nba_players_table)
-    # request.where('college', "Indiana University")
-    # request.join('Player', $test_table, "name")
+    request.where('college', "Indiana University")
+    request.join('Player', $test_table, "name")
     p request.run
 end
 
@@ -71,35 +70,3 @@ def main()
 end
 
 main()
-
-=begin
-    $>ruby my_sqlite_cli.rb class.db 
-
-    MySQLite version 0.1 20XX-XX-XX
-    
-    my_sqlite_cli> SELECT * FROM students; =====> ["SELECT", [*], "FROM", "students"]
-    Jane|me@janedoe.com|A|http://blog.janedoe.com
-    
-    my_sqlite_cli>INSERT INTO students VALUES (John, john@johndoe.com, A, https://blog.johndoe.com);
-    
-    my_sqlite_cli>UPDATE students SET email = 'jane@janedoe.com', blog = 'https://blog.janedoe.com' WHERE name = 'Jane';
-    
-    my_sqlite_cli>DELETE FROM students WHERE name = 'John';
-    
-    my_sqlite_cli>quit
-$>
-SELECT * FROM students WHERE name = "thays";
-SELECT * FROM students WHERE name = "thays" JOIN ON table2
-ON table1.column_name = table2.column_name;
-SELECT * FROM students WHERE name = "thays" JOIN ON table2
-ON table1.column_name = table2.column_name ORDER;
-
-
-
-
-SELECT => 1 or 2 Columns or * | * == give me everything
-!FROM = err ELSE get target table from the next index
-WHERE =>
-
-
-=end
