@@ -92,3 +92,25 @@ PART II
   - Parse => Store in objects
   - Execute with MySQliteRequest objects
   - Implement Quit method to exit out  
+
+
+1. SELECT
+    - columns                       
+        - `*`                   ✅                      
+        - Array of col          ✅      
+        - Single Col            ✅     
+        - refactor              
+        - change printing style 
+        - error validation
+2. FROM
+    - table
+        - one table name
+        - Call from these tables (Hint user)
+    
+3. WHERE
+    - key and value with an `=` sign 
+    - 
+
+4. JOIN
+5. ORDER BY
+    

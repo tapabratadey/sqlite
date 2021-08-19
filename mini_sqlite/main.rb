@@ -11,17 +11,20 @@ $nba_players_table = './csv_files/nba_players.csv'
 #==========
 
 def select_query(request) # with order
-    request.select('name')
+    request.select('*')
     request.from($test_table)
-    request.where('birth_date', "June 24, 1968")    # ===> OPTIONAL
-    request.order('desc', 'name')
+    request.select(['birth_city', 'college'])
+    request.from($nba_players_table)
+    # request.where('birth_date', 'June 24, 1968')    # ===> OPTIONAL
+    # request.order('asc', 'name')
+    p request.run
 end
 
 def select_join_query(request) # join
     request.select(['birth_city', 'college'])
     request.from($nba_players_table)
-    # request.where('college', "Indiana University")
-    # request.join('Player', $test_table, "name")
+    request.where('college', "Indiana University")
+    request.join('Player', $test_table, "name")
     p request.run
 end
 
@@ -32,8 +35,9 @@ end
 def update_query(request)
     request.update($test_table)
     data = {"name" => "thays"}
-    request.set(data)
-    request.where('name', 'test') # ===> OPTIONAL
+    data1 = {"name" => "thays", "college" => "Detroit"}
+    request.where('name', 'Kareem Abdul-Jabbar') # ===> OPTIONAL
+    request.set(data1)
     request.run
 end
 
@@ -59,15 +63,25 @@ def delete_query(request)
     request.run
 end
 
-def main()
+def q_1
+    # Part I - Does it work to select name from nba player data?
     request = MySqliteRequest.new
+    request.from($nba_players_table)
+    request.select('name')
+    p request.run
+end
+
+def main()
+    q_1
+    # Q_2()
+    # request = MySqliteRequest.new
     # select_query(request)
     # select_join_query(request)
     # update_query(request)
     # insert_query(request)
     # delete_query(request)
-    req_cli = SqliteCli.new
-    req_cli.read_cli(request)
+    # req_cli = SqliteCli.new
+    # req_cli.read_cli(request)
 end
 
 main()
