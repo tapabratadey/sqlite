@@ -1,3 +1,4 @@
+require_relative 'select_cli'
 require_relative 'update_cli'
 require_relative 'insert_cli'
 require_relative 'delete_cli'
