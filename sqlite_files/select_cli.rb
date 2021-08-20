@@ -1,3 +1,16 @@
+=begin
+==========================
+        SELECT CLI
+==========================
+valid_select
+    - validates SELECT query 
+    - validates params of SELECT query
+        - if valid THEN
+            - requests SELECT queries
+        - else 
+            - prints error message
+=end
+
 module SelectCli
     #===================================
     # validate_select_query_params funcs

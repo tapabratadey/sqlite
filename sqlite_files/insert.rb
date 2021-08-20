@@ -39,4 +39,13 @@ module Insert
             file.puts @insert_vals.values.join(',')
         end
     end
+
+    #==========
+    # HELPER
+    #==========
+
+    def _get_header
+        csv = CSV.read(@table_name, headers:true)
+        return csv.headers
+    end
 end

@@ -1,14 +1,9 @@
-require_relative 'select.rb'
-require_relative 'update.rb'
-require_relative 'insert.rb'
-require_relative 'delete.rb'
-
 class MySqliteRequest
     include Select
     include Update
     include Insert
     include Delete
-
+    
     def initialize
         @type_of_query = :none
         @table_name = nil
@@ -25,19 +20,24 @@ class MySqliteRequest
         @join_flag = 0
         @order_flag = 0
     end
+
+    def reset
+        initialize
+    end
+
     def _parser
         if (@type_of_query == :select)
             _print_select
-            # _exec_select            
+            _exec_select            
         elsif(@type_of_query == :insert)
             _print_insert
-            # _exec_insert  
+            _exec_insert  
         elsif(@type_of_query == :update)
             _print_update
-            # _exec_update
+            _exec_update
         elsif(@type_of_query == :delete)
             _print_delete
-            # _exec_delete
+            _exec_delete
         end
     end
 
@@ -54,3 +54,4 @@ class MySqliteRequest
         _parser
     end
 end
+

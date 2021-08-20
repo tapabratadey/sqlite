@@ -1,13 +1,25 @@
+=begin
+==========================
+        UPDATE CLI
+==========================
+valid_update
+    - validates update query 
+    - validates params of update query
+        - if valid THEN
+            - requests update queries
+        - else 
+            - prints error message
+=end
 module UpdateCli
 
-    def _seq_validator
+    def _seq_validator_update
         if @update_idx == 0 and @set_idx == 1
             return true
         end
         return false
     end
 
-    def _set_idx_(key, idx)
+    def _set_idx_update(key, idx)
         if key == "UPDATE"
             @update_idx = idx
         elsif key == "SET"
@@ -20,12 +32,12 @@ module UpdateCli
     def validate_update_query(result)
         result.each_with_index do |(key, val), idx|
             if @update_cmds.include?(key)
-                _set_idx_(key, idx)
+                _set_idx_update(key, idx)
             else
                 return "INVALID: Query should only contain UPDATE, SET, WHERE"
             end
         end
-        if _seq_validator == true
+        if _seq_validator_update == true
             return true
         else
             return "INVALID: Update query order should be: UPDATE => SET"
@@ -40,7 +52,7 @@ module UpdateCli
             return true
         end
     end
-    def _set_hash(before_hash, result, request)
+    def _set_hash_updt(before_hash, result, request)
         idx = 0
         while idx < before_hash.length
             if before_hash[idx + 1]
@@ -54,17 +66,17 @@ module UpdateCli
         return true
     end
 
-    def _when_where(arr, idx, before_hash, request, result)
+    def _when_where_updt(arr, idx, before_hash, request, result)
         while arr[idx + 1] != "WHERE"
             if arr[idx + 1] and arr[idx + 1] != "="
                 before_hash << arr[idx + 1]
             end
             idx += 1
         end
-        return _set_hash(before_hash, result, request)
+        return _set_hash_updt(before_hash, result, request)
     end
 
-    def _no_where(arr, idx, before_hash, request, result)
+    def _no_where_updt(arr, idx, before_hash, request, result)
         i = idx 
         while i < arr.length - 1
             if arr[i + 1] and arr[i + 1] != "="
@@ -72,20 +84,19 @@ module UpdateCli
             end
             i += 1
         end
-        return _set_hash(before_hash, result, request)
+        return _set_hash_updt(before_hash, result, request)
     end
 
     def _if_set(arr, idx, request)
         result = {}
         before_hash = []
         if @where_idx != 0
-            return _when_where(arr, idx, before_hash, request, result)
+            return _when_where_updt(arr, idx, before_hash, request, result)
         else
-            return _no_where(arr, idx, before_hash, request, result)
+            return _no_where_updt(arr, idx, before_hash, request, result)
         end
     end
     
-    # UPDATE students SET email = 'jane@janedoe.com', blog = 'https://blog.janedoe.com' WHERE name = 'Jane';
     def validate_update_query_param(arr, request)
         arr.each_with_index do |element, idx|
             if element.upcase == "UPDATE"

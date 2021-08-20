@@ -36,9 +36,13 @@ module Update
         csv = CSV.read(@table_name, headers:true)
         csv.each do |row|
             if @where_col and @where_col_val and (row[@where_col] == @where_col_val)
-                row[@where_col] = @update_vals[@where_col]
+                @update_vals.each do |key, value|
+                    row[key] = value
+                end
             elsif !@where_col or !@where_col_val
-                row[@update_vals.keys.join] = @update_vals.values.join
+                @update_vals.each do |key, value|
+                    row[key] = value
+                end
             end
         end
         _updating_file(csv)
@@ -60,5 +64,6 @@ module Update
             end
         end
     end
-        
+    
+    
 end

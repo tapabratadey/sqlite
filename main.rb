@@ -5,23 +5,28 @@ Dir["./sqlite_files/*.rb"].each {|sqlite_file| require sqlite_file }
 
 $test_table = './csv_files/test.csv'
 $nba_players_table = './csv_files/nba_players.csv'
+$nba_players_data_table = './csv_files/nba_player_data.csv'
+$students_table = './csv_files/students.csv'
 
 #==========
 #  SELECT
 #==========
 
 def select_query(request) # with order
-    request.select('name')
+    request.select('*')
     request.from($test_table)
-    request.where('birth_date', "June 24, 1968")    # ===> OPTIONAL
-    request.order('desc', 'name')
+    request.select(['birth_city', 'college'])
+    request.from($nba_players_table)
+    # request.where('birth_date', 'June 24, 1968')    # ===> OPTIONAL
+    # request.order('asc', 'name')
+    p request.run
 end
 
 def select_join_query(request) # join
     request.select(['birth_city', 'college'])
     request.from($nba_players_table)
-    # request.where('college', "Indiana University")
-    # request.join('Player', $test_table, "name")
+    request.where('college', "Indiana University")
+    request.join('Player', $test_table, "name")
     p request.run
 end
 
@@ -32,8 +37,9 @@ end
 def update_query(request)
     request.update($test_table)
     data = {"name" => "thays"}
-    request.set(data)
-    request.where('name', 'test') # ===> OPTIONAL
+    data1 = {"name" => "thays", "college" => "Detroit"}
+    request.where('name', 'Kareem Abdul-Jabbar') # ===> OPTIONAL
+    request.set(data1)
     request.run
 end
 
@@ -59,6 +65,9 @@ def delete_query(request)
     request.run
 end
 
+
+
+
 def main()
     request = MySqliteRequest.new
     # select_query(request)
@@ -66,8 +75,9 @@ def main()
     # update_query(request)
     # insert_query(request)
     # delete_query(request)
-    req_cli = SqliteCli.new
-    req_cli.read_cli(request)
+    # req_cli = SqliteCli.new
+    # req_cli.read_cli(request)
 end
 
 main()
+

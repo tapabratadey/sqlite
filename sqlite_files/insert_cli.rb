@@ -1,13 +1,26 @@
+=begin
+==========================
+        INSERT CLI
+==========================
+valid_insert
+    - validates insert query 
+    - validates params of insert query
+        - if valid THEN
+            - requests insert queries
+        - else 
+            - prints error message
+=end
+
 module InsertCli
 
-    def _seq_validator
+    def _seq_validator_insert
         if @insert_idx == 0 and @into_idx == 1 and @values_idx == 2
             return true
         end
         return false
     end
 
-    def _set_idx_(key, idx)
+    def _set_idx_insert(key, idx)
         if key == "INSERT"
             @insert_idx = idx
         elsif key == "INTO"
@@ -19,13 +32,13 @@ module InsertCli
 
     def validate_insert_query(result)
         result.each_with_index do |(key, val), idx|
-            if @insert_cmds.include?(key)
-                _set_idx_(key, idx)
+            if @insert_cmds.include?(key) == true
+                _set_idx_insert(key, idx)
             else
                 return "INVALID: Query should only contain INSERT INTO, VALUES"
             end
         end
-        if _seq_validator == true
+        if _seq_validator_insert == true
             return true
         else
             return "INVALID: Query order should be: INSERT INTO => VALUES"

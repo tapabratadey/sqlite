@@ -1,13 +1,11 @@
 # my-sqlite
-updating
 
 ## Description
 
-1. Remake SQL Query Types: `SELECT`, `INSERT`, `UPDATE`, `DELETE`
-2. Remake SQL Query Commands: `SET`, `VALUES`, `ORDER`, `JOIN`, `FROM`, `WHERE`
-3.
+1. Remake of SQL Query Types: `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+2. Remake of SQL Query Commands: `SET`, `VALUES`, `ORDER`, `JOIN`, `FROM`, `WHERE`
 
-## Part 1 => tapa
+## Part I
 
 ---
 
@@ -59,58 +57,33 @@ From Implement a from method which must be present on each request. From will ta
 def from(table_name)
 ```
 
-TODO </br>
+## PART II
+---
+Create a program which will be a `Command Line Interface (CLI)` to your MySqlite class.
+It will use `readline` and we will run it with ruby `my_sqlite_cli.rb`.
 
-## 
-PARSING (AUG 6th, 2021) 
-- def initialize ✅
-- def from(table_name)✅
-- def select(column_name) OR def select([column_name_a, column_name_b]) ✅
-- def where(column_name, criteria) ✅
-- def order(order, column_name) ✅
-- def insert(table_name) ✅
-- def values(data)✅
-- def update (table_name)✅
-- def set(data)✅
+It will accept request with:
 
-ALGO (AUG 7th, 2021) 
-- def delete ✅ 
-- def join(column_on_db_a, filename_db_b, column_on_db_b) ✅
-- def exec_select ✅
-- fix path in File.read() ✅
-- def exec_insert ✅
-- def exec_update ✅
-- def exec_delete ✅ 
-- def join w/ where and w/o where ✅ 
-- split the class into files by query type and refactor code ✅ 
-- def order ✅ 
-- PART II
-- error validation
+`SELECT|INSERT|UPDATE|DELETE` </br>
+`FROM` </br>
+`WHERE` (max 1) </br>
+`JOIN ON` (max 1) </br>
 
-PART II
-  - Read from stdin
-  - Parse => Store in objects
-  - Execute with MySQliteRequest objects
-  - Implement Quit method to exit out  
+## STEPS TO REPRODUCE
+---
 
+1. `cd mini_sqlite`
+2. `ruby test.rb `
 
-1. SELECT
-    - columns                       
-        - `*`                   ✅                      
-        - Array of col          ✅      
-        - Single Col            ✅     
-        - refactor              
-        - change printing style 
-        - error validation
-2. FROM
-    - table
-        - one table name
-        - Call from these tables (Hint user)
-    
-3. WHERE
-    - key and value with an `=` sign 
-    - 
+## PART I
+---
 
-4. JOIN
-5. ORDER BY
-    
+- In test.rb, `uncomment` each Test case `one by one`
+- Make sure to `comment` each test case as you progress
+
+## PART II
+---
+
+- In test.rb, from Test 6, `copy/paste` the query into your `CLI`
+- Make sure the `table name path` is `correct`
+- To `exit the program`, enter `quit` or `ctrl + c`

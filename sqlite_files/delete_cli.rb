@@ -1,3 +1,16 @@
+=begin
+==========================
+        DELETE CLI
+==========================
+valid_delete
+    - validates delete query 
+    - validates params of delete query
+        - if valid THEN
+            - requests delete queries
+        - else 
+            - prints error message
+=end
+
 module DeleteCli
 
     def _seq_validator

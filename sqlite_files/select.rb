@@ -13,6 +13,7 @@ module Select
             @columns << query_col.to_s # if not an array
         end
     end
+    
     def join(col_on_db_a, file_db_b, col_on_db_b)
         @join_flag = 1
         @column_join_db_a = col_on_db_a
@@ -39,7 +40,7 @@ module Select
         if (@column_join_db_a and @column_join_db_b and @second_db)
             puts "JOIN #{@second_db} ON #{@table_name}.#{@column_join_db_a}=#{@second_db}.#{@column_join_db_b}"
         end
-        if (@order_col and (@order_type == "desc" || @order_type == "asc") )
+        if (@order_col and (@order_type.upcase == "DESC" || @order_type.upcase == "ASC") )
             puts "ORDER BY #{@order_col} #{@order_type}"
         end
     end
@@ -73,9 +74,9 @@ module Select
     #==========
 
     def _parse_order(result)
-        if (@order_col and @order_type == "desc")
+        if (@order_col and @order_type.upcase == "DESC")
             result = result.sort_by!{ |h| h[@order_col] }.reverse!
-        elsif (@order_col and @order_type == "asc")
+        elsif (@order_col and @order_type.upcase == "ASC")
             result = result.sort_by{ |h| h[@order_col] }
         # else
         #     result = result.sort_by { |element| element.values }
@@ -94,13 +95,23 @@ module Select
             end
         end
     end
+    
 
     def _parse_when_not_join(result, csv)
         csv.each do |row|
-            if row[@where_col] == @where_col_val and @where_col and @where_col_val
-                result << row.to_hash.slice(*@columns)
-            else
-                result << row.to_hash.slice(*@columns)
+            if row[@where_col] == @where_col_val and @where_col and @where_col_val #where is present
+                if @columns[0] == "*"
+                    result << row.to_hash
+                else
+                    # p row[*@columns]
+                    result << row.to_hash.slice(*@columns)
+                end
+            elsif !@where_col or !@where_col_val
+                if @columns[0] == "*"
+                    result << row.to_hash
+                elsif @columns[0] != "*"
+                    result << row.to_hash.slice(*@columns)
+                end
             end
         end
     end

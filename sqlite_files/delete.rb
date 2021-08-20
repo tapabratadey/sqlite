@@ -1,7 +1,18 @@
+=begin
+======================
+        DELETE
+======================
+_exec_delete
+    - opens a file 
+    - either deletes a row
+    - or deletes entire file
+=end
+
 module Delete
-    #==========
+    #====================
     # SQL CMD
-    #==========
+    # setting query type
+    #====================
 
     def delete 
         @type_of_query = :delete
