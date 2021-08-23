@@ -114,22 +114,8 @@ module SelectCli
                 arr[idx + x].gsub!("'","")
                 arr[idx + x].gsub!(";","")
                 where_val << arr[idx + x]
-                # if arr[idx + x] and arr[idx + x].include?(";")
-                    
-                # else
-                    
-                # end
-                
-            # if arr[idx + x] and arr[idx + x].start_with?("'")
-            #     p arr[idx + x].split("'")
-            #     where_val << arr[idx + x].split("'")[1]
-            # elsif arr[idx + x] and arr[idx + x].end_with?("'")
-            #     p arr[idx + x].split("'")
-            #     where_val << arr[idx + x].split("'")[0]
-            # else
-            #     if arr[idx + x]
-            #         where_val << arr[idx + x]
-            #     end
+            elsif arr[idx + x]
+                where_val << arr[idx + x]
             end
             x += 1
         end 

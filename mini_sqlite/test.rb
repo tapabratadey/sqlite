@@ -10,7 +10,7 @@ def test_cases()
     # request.from($nba_players_data_table) #'./csv_files/nba_player_data.csv'
     # request.select('name')
     # request.where('birth_state', 'Indiana')
-    # p request.run # SELECT needs to print
+    # request.run # SELECT needs to print
 
     # PASSED
 

@@ -131,6 +131,6 @@ module Select
         if @order_flag == 1
             result = _parse_order(result)
         end
-        result
+        p result
     end
 end

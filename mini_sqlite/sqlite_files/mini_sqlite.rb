@@ -1,8 +1,3 @@
-require_relative 'select'
-require_relative 'update'
-require_relative 'insert'
-require_relative 'delete'
-
 class MySqliteRequest
     include Select
     include Update

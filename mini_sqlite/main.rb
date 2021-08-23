@@ -19,7 +19,7 @@ def select_query(request) # with order
     request.from($nba_players_table)
     # request.where('birth_date', 'June 24, 1968')    # ===> OPTIONAL
     # request.order('asc', 'name')
-    p request.run
+    request.run
 end
 
 def select_join_query(request) # join
@@ -27,7 +27,7 @@ def select_join_query(request) # join
     request.from($nba_players_table)
     request.where('college', "Indiana University")
     request.join('Player', $test_table, "name")
-    p request.run
+    request.run
 end
 
 #==========
