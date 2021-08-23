@@ -34,8 +34,12 @@ module Select
     def _print_select
         puts "SELECT #{@columns} "
         puts "FROM #{@table_name} "
-        if (@where_col)
+        if (@where_flag == 0)
             puts "WHERE #{@where_col} = #{@where_col_val}"
+        end
+        if (@where_flag == 1)
+            puts "WHERE #{@where_col} = #{@where_col_val}"
+            puts "AND #{@where_col_1} = #{@where_col_val_1}"
         end
         if (@column_join_db_a and @column_join_db_b and @second_db)
             puts "JOIN #{@second_db} ON #{@table_name}.#{@column_join_db_a}=#{@second_db}.#{@column_join_db_b}"
@@ -95,23 +99,40 @@ module Select
             end
         end
     end
-    
+
+    def _if_two_where_cols(row)
+        if row[@where_col] == @where_col_val and
+                row[@where_col_1] == @where_col_val_1 and
+                @where_col and @where_col_val and 
+                @where_col_1 and @where_col_val_1
+            return true
+        end
+    end
+
+    def check_for_all_cols(row, result)
+        if @columns[0] == "*"
+            result << row.to_hash
+        else
+            result << row.to_hash.slice(*@columns)
+        end
+    end
+
+    def _if_one_where_col(row)
+        if row[@where_col] == @where_col_val and
+            @where_col and @where_col_val and
+            !@where_col_1 and !@where_col_val_1
+            return true
+        end
+    end
 
     def _parse_when_not_join(result, csv)
         csv.each do |row|
-            if row[@where_col] == @where_col_val and @where_col and @where_col_val #where is present
-                if @columns[0] == "*"
-                    result << row.to_hash
-                else
-                    # p row[*@columns]
-                    result << row.to_hash.slice(*@columns)
-                end
+            if _if_two_where_cols(row) == true
+                check_for_all_cols(row, result)
+            elsif _if_one_where_col(row) == true
+                 check_for_all_cols(row, result)
             elsif !@where_col or !@where_col_val
-                if @columns[0] == "*"
-                    result << row.to_hash
-                elsif @columns[0] != "*"
-                    result << row.to_hash.slice(*@columns)
-                end
+                check_for_all_cols(row, result)
             end
         end
     end
