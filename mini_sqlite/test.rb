@@ -8,6 +8,12 @@ def test_cases()
     #           TEST 1
     #============================
 
+    # request.from($nba_players_data_table)
+    # request.select('name')
+    # request.run
+
+    # ADDITIONAL TEST
+
     # request.from($nba_players_data_table) #'./csv_files/nba_player_data.csv'
     # request.select('name')
     # request.where('birth_state', 'Indiana')
@@ -30,18 +36,20 @@ def test_cases()
     #           TEST 3
     #============================
 
-    request.from($nba_players_data_table)
-    request.select('name')
-    request.where('college', 'University of California')
-    request.where('year_start', '1997')
-    request.run
+    # request.from($nba_players_data_table)
+    # request.select('name')
+    # request.where('college', 'University of California')
+    # request.where('year_start', '1997')
+    # request.run
+
+    # PASSED
 
     #============================
     #           TEST 4
     #============================
     
     # request.insert($nba_players_data_table)
-    # request.values('name' => 'Alaa Abdelnaby', 'year_start' => '1991', 'year_end' => '1995', 'position' => 'F-C', 'height' => '6-10', 'weight' => '240', 'birth_date' => "June 24, 1968", 'college' => 'Duke University')
+    # request.values('name' => 'Alaa Abdelnaby', 'year_start' => '1991', 'year_end' => '1995', 'position' => 'F-C', 'height' => '6-10', 'weight' => '240', 'birth_date' => "\"June 24, 1968\"", 'college' => 'Duke University')
     # request.run
 
     # PASSED
@@ -63,7 +71,7 @@ def test_cases()
     
     # request.delete()
     # request.from($nba_players_data_table)
-    # request.where('name', 'Alaa Abdelnaby')
+    # request.where('name', 'Matt Zunic')
     # request.run
 
     # PASSED
@@ -88,9 +96,9 @@ def test_cases()
     #============================
     #        TEST 8 CLI
     #============================
-    # Without space 
+    # Without space ========> FIX BUG
     
-    # SELECT name,email FROM students WHERE name = 'Mila'
+    # SELECT name,email FROM ./csv_files/students.csv WHERE name = 'Mila'
     
     # With space
     
@@ -102,11 +110,11 @@ def test_cases()
     #        TEST 9 CLI
     #============================
 
+    # Without space ========> FIX BUG
+
+    # INSERT INTO ./csv_files/students.csv VALUES (John,john@johndoe.com,A,https://blog.johndoe.com)
+
     # With space
-
-    # INSERT INTO students VALUES (John,john@johndoe.com,A,https://blog.johndoe.com)
-
-    # Without space
 
     # CLI: INSERT INTO ./csv_files/students.csv VALUES (John, john@johndoe.com, A, https://blog.johndoe.com)
 
@@ -126,6 +134,16 @@ def test_cases()
 
     # CLI: DELETE FROM ./csv_files/students.csv WHERE name = 'John'
     
+    # PASSED
+
+    #============================
+    #        TEST 12 CLI
+    #============================
+
+    # CLI: SELECT name FROM ./csv_files/nba_player_data.csv WHERE birth_date = 'June 24, 1968'
+    
+    # COMMENT: Make sure to add quotes in birth_date value in ./csv_files/nba_player_data.csv
+
     # PASSED
 end
 

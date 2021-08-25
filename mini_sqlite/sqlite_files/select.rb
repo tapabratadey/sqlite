@@ -34,10 +34,10 @@ module Select
     def _print_select
         puts "SELECT #{@columns} "
         puts "FROM #{@table_name} "
-        if (@where_flag == 0)
+        if (@where_flag == 1 and @where_col != nil and @where_col_1 == nil)
             puts "WHERE #{@where_col} = #{@where_col_val}"
         end
-        if (@where_flag == 1)
+        if (@where_flag == 1 and @where_col_val_1 != nil)
             puts "WHERE #{@where_col} = #{@where_col_val}"
             puts "AND #{@where_col_1} = #{@where_col_val_1}"
         end
@@ -82,8 +82,6 @@ module Select
             result = result.sort_by!{ |h| h[@order_col] }.reverse!
         elsif (@order_col and @order_type.upcase == "ASC")
             result = result.sort_by{ |h| h[@order_col] }
-        # else
-        #     result = result.sort_by { |element| element.values }
         end
         return result
     end
@@ -93,7 +91,7 @@ module Select
         csv.each do |row|
             csv_b.each do |row_b|
                 if _check_invalid_cols(row, row_b)
-                    throw "Column doesn't exist in the database"
+                    puts "Error: Column doesn't exist in the database"
                 end
                 check_matching_cols(row, row_b, result)
             end
